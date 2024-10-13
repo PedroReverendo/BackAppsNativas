@@ -36,6 +36,66 @@ connection.connect((err) => {
   console.log('Connected!');
 });
 
+
+// rutas y consultas !!!!!!!!!!!!!!!!!
+app.get("/test", (req, res) => {
+  res.send('API is working!');
+});
+
+// CLIENTE GET AND POST
+app.get("/cliente", (req, res) => {
+  connection.query('SELECT * FROM Cliente', (err, rows) => {
+      if (err) {
+          console.error('Error executing query:', err);
+          return res.status(500).send('Error executing query');
+      }
+      res.json(rows);
+  });
+});
+
+app.post("/cliente", (req, res) => {
+  const { Nombre, Apellido, Email, Direccion, Telefono } = req.body;
+  connection.query(
+    'INSERT INTO Cliente (Nombre, Apellido, Email, Direccion, Telefono) VALUES (?, ?, ?, ?, ?)',
+    [Nombre, Apellido, Email, Direccion, Telefono],
+    (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        return res.status(500).send('Error executing query');
+      }
+      res.status(201).json({ message: 'Cliente created', id: result.insertId });
+    }
+  );
+});
+
+
+// EQUIPO GET AND POST
+app.get("/equipo", (req, res) => {
+  connection.query('SELECT * FROM Equipo', (err, rows) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send('Error executing query');
+    }
+    res.json(rows);
+  });
+});
+
+app.post("/equipo", (req, res) => {
+  const { Nombre_Equipo, Pais, Tipo } = req.body;
+  connection.query(
+    'INSERT INTO Equipo (Nombre_Equipo, Pais, Tipo) VALUES (?, ?, ?)',
+    [Nombre_Equipo, Pais, Tipo],
+    (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        return res.status(500).send('Error executing query');
+      }
+      res.status(201).json({ message: 'Equipo created', id: result.insertId });
+    }
+  );
+});
+
+
 // PRODUCTO GET AND POST
 app.get("/producto", (req, res) => {
   connection.query('SELECT * FROM Producto', (err, rows) => {
@@ -72,6 +132,40 @@ app.post("/producto", upload.single('imagen'), (req, res) => {
     }
   );
 });
+
+// VENTA GET AND POST
+app.get("/venta", (req, res) => {
+  connection.query('SELECT * FROM Venta', (err, rows) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return res.status(500).send('Error executing query');
+    }
+    res.json(rows);
+  });
+});
+
+app.post("/venta", (req, res) => {
+  const { ID_Cliente, ID_Producto, Fecha_Pedido, Estado_Pedido, Cantidad, Monto_Unitario, Numero_Pedido } = req.body;
+  connection.query(
+    'INSERT INTO Venta (ID_Cliente, ID_Producto, Fecha_Pedido, Estado_Pedido, Cantidad, Monto_Unitario, Numero_Pedido) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [ID_Cliente, ID_Producto, Fecha_Pedido, Estado_Pedido, Cantidad, Monto_Unitario, Numero_Pedido],
+    (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        return res.status(500).send('Error executing query');
+      }
+      res.status(201).json({ message: 'Venta created', id: result.insertId });
+    }
+  );
+});
+
+
+
+
+
+
+
+
 
 // ************ Route System require and use() ************
 
