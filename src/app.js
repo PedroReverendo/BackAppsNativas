@@ -43,8 +43,21 @@ app.get("/test", (req, res) => {
 });
 
 // CLIENTE GET AND POST
+//contact
+
+app.post( "/guardarInfo" ,  (req, res) => {
+  let datos = req.body;
+  connection.query(
+    'INSERT INTO contact (nombre, apellido, email, telefono, mensaje) values ("' + datos[0] + '" , "' + datos[1] +'" , "' + datos[2] + '" , "' + datos[3] + '" , "' + datos[4] + '")', 
+    (err,rows) => {
+    if(err) throw err;
+    res.json(rows);
+  });
+});
+
+
 app.get("/cliente", (req, res) => {
-  connection.query('SELECT * FROM Cliente', (err, rows) => {
+  connection.query('SELECT * FROM contact', (err, rows) => {
       if (err) {
           console.error('Error executing query:', err);
           return res.status(500).send('Error executing query');
@@ -56,7 +69,7 @@ app.get("/cliente", (req, res) => {
 app.post("/cliente", (req, res) => {
   const { Nombre, Apellido, Email, Direccion, Telefono } = req.body;
   connection.query(
-    'INSERT INTO Cliente (Nombre, Apellido, Email, Direccion, Telefono) VALUES (?, ?, ?, ?, ?)',
+    'INSERT INTO contact (Nombre, Apellido, Email, Direccion, Telefono) VALUES (?, ?, ?, ?, ?)',
     [Nombre, Apellido, Email, Direccion, Telefono],
     (err, result) => {
       if (err) {
@@ -106,6 +119,7 @@ app.get("/producto", (req, res) => {
     res.json(rows);
   });
 });
+
 
 // Modificación para soportar imágenes BLOB
 app.post("/producto", upload.single('imagen'), (req, res) => {
