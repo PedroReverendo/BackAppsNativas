@@ -38,12 +38,7 @@ connection.connect((err) => {
 
 
 // rutas y consultas !!!!!!!!!!!!!!!!!
-app.get("/test", (req, res) => {
-  res.send('API is working!');
-});
-
-// CLIENTE GET AND POST
-//contact
+// contact GET AND POST
 
 app.post( "/guardarInfo" ,  (req, res) => {
   let datos = req.body;
@@ -58,6 +53,7 @@ app.post( "/guardarInfo" ,  (req, res) => {
 
 app.get("/cliente", (req, res) => {
   connection.query('SELECT * FROM contact', (err, rows) => {
+
       if (err) {
           console.error('Error executing query:', err);
           return res.status(500).send('Error executing query');
@@ -66,23 +62,8 @@ app.get("/cliente", (req, res) => {
   });
 });
 
-app.post("/cliente", (req, res) => {
-  const { Nombre, Apellido, Email, Direccion, Telefono } = req.body;
-  connection.query(
-    'INSERT INTO contact (Nombre, Apellido, Email, Direccion, Telefono) VALUES (?, ?, ?, ?, ?)',
-    [Nombre, Apellido, Email, Direccion, Telefono],
-    (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        return res.status(500).send('Error executing query');
-      }
-      res.status(201).json({ message: 'Cliente created', id: result.insertId });
-    }
-  );
-});
 
-
-// EQUIPO GET AND POST
+// EQUIPO GET
 app.get("/equipo", (req, res) => {
   connection.query('SELECT * FROM Equipo', (err, rows) => {
     if (err) {
@@ -91,21 +72,6 @@ app.get("/equipo", (req, res) => {
     }
     res.json(rows);
   });
-});
-
-app.post("/equipo", (req, res) => {
-  const { Nombre_Equipo, Pais, Tipo } = req.body;
-  connection.query(
-    'INSERT INTO Equipo (Nombre_Equipo, Pais, Tipo) VALUES (?, ?, ?)',
-    [Nombre_Equipo, Pais, Tipo],
-    (err, result) => {
-      if (err) {
-        console.error('Error executing query:', err);
-        return res.status(500).send('Error executing query');
-      }
-      res.status(201).json({ message: 'Equipo created', id: result.insertId });
-    }
-  );
 });
 
 
@@ -120,7 +86,7 @@ app.get("/producto", (req, res) => {
   });
 });
 
-
+//pasamos la imagen a numero binario para que sean guardadas a la base de datos
 // Modificación para soportar imágenes BLOB
 app.post("/producto", upload.single('imagen'), (req, res) => {
   const { ID_Equipo, Nombre, Descripcion, Precio, Talle, Stock, Temporada } = req.body;
@@ -130,7 +96,6 @@ app.post("/producto", upload.single('imagen'), (req, res) => {
     return res.status(400).send('Imagen es requerida');
   }
   
-  // El archivo de imagen viene en req.file.buffer al usar memoryStorage
   const imageData = req.file.buffer;
 
   connection.query(
@@ -146,6 +111,8 @@ app.post("/producto", upload.single('imagen'), (req, res) => {
     }
   );
 });
+
+
 
 // VENTA GET AND POST
 app.get("/venta", (req, res) => {
